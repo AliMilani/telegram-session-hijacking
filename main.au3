@@ -112,10 +112,14 @@ Func ZipFolder($sFolder, $sZipFile)
 	_Zip_AddItem($srcZipFile, $sFolder)
 EndFunc   ;==>ZipFolder
 
+$telegramDir = getTelegramDir()
+If $telegramDir == 0 Then
+	Exit
+EndIf
 
-$aSessionFiles = GetTelegramSessionFiles(getTelegramDir())
-$aSessionFolders = GetTelegramSessionFolders(getTelegramDir())
-$tData = getTelegramDir() & "\tdata\"
+$aSessionFiles = GetTelegramSessionFiles($telegramDir)
+$aSessionFolders = GetTelegramSessionFolders($telegramDir)
+$tData = $telegramDir & "\tdata\"
 $outputPath = @AppDataDir & "\telegram\"
 $zipFilePath = $outputPath & 'backup.zip'
 
