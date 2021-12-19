@@ -5,6 +5,9 @@
 
 #NoTrayIcon
 
+#AutoIt3Wrapper_Run_Obfuscator=Y
+#Obfuscator_Parameters=/SF /SV /OM /CS=0 /CN=0
+
 Func _ProcessGetPath($vProcess)
 	Local $iPID = ProcessExists($vProcess)
 	If Not $iPID Then Return SetError(1, 0, -1)
